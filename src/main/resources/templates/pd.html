@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<!--<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>-->
+
+
+<html lang="en" style="">
+<head>
+    <style type="text/css" class="AMap.MapType">.amap-maptypecontrol {
+        z-index: 150;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 304
+    }
+
+    .amap-maptype-wrap {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 64px;
+        height: 64px
+    }
+
+    .amap-maptype-con {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60px;
+        height: 60px;
+        background: #fff;
+        border: solid 1px #ccc;
+        cursor: pointer
+    }
+
+    .amap-maptype-win {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 56px;
+        height: 56px;
+        overflow: hidden;
+        background: #ccc;
+        border: solid 1px #ccc
+    }
+
+    .amap-maptype-title {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 20px;
+        color: #333;
+        text-align: center;
+        font-size: 12px;
+        line-height: 20px;
+        background: #fff
+    }
+
+    .amap-maptype-title:hover {
+        background-color: #eee
+    }
+
+    .amap-maptype-list {
+        position: absolute;
+        top: 64px;
+        right: 0;
+        width: 100px;
+        background: #fff;
+        border: solid 1px #ccc;
+        overflow: hidden
+    }
+
+    .amap-maptype-list p {
+        width: 100px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+        background: #fff
+    }
+
+    .amap-maptype-lsit p:hover {
+        background: #eee
+    }
+
+    .amap-maptype-check {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin-left: 2px;
+        background: url(https://webapi.amap.com/theme/v1.3/maptype-bg.png) no-repeat -30px 4px
+    }
+
+    .amap-maptype-checked {
+        background-position: 0 4px
+    }
+
+    .amap-maptype-check-hover {
+        background-position: -15px 4px
+    }
+
+    .amap-maptype-label {
+        display: inline-block;
+        width: 60px;
+        height: 15px;
+        color: #333;
+        font-size: 12px;
+        line-height: 15px;
+        margin-left: 10px
+    }</style>
+    <style type="text/css" class="AMap.style">.vml {
+        behavior: url(#default#VML);
+        display: inline-block;
+        position: absolute
+    }
+
+    .amap-custom {
+        top: 0;
+        left: 0;
+        position: absolute
+    }
+
+    .amap-container img {
+        max-width: none !important;
+        max-height: none !important
+    }
+
+    .amap-container {
+        touch-action: none;
+        position: relative;
+        overflow: hidden;
+        background: #fcf9f2 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0AgMAAAC2uDcZAAAADFBMVEX////////////////1pQ5zAAAABHRSTlMAgP/AWuZC2AAAAVhJREFUeAFiYGAQYGDEQjAB2rcDC4BiGIqiU7abdKlO2QkeIClyPsDHweMKtOPHIJ1Op6/w7Y4fdqfT6VpndzqdrnV2p9PpWmd3Oj3qWndSoKp+2J1Op7vr7E6n07XO7nQ6XevsTqfTtc7udPo4/f787E6n0911dqfT6VpndzqdrnV2p9PpWmd3Ot27Ce8m6HS6u85dR6fTtU7r6HS61mkdnU7XOrvT6XTvJuxOp9PddXan0+laZ3c6na51dDpd67SOTqd7N+HdBJ1Od9e56+h0utZpHZ1O1zq70+l0rbM7nU73bsLudDrdXWd3Ol3rtI5Op2ud1tHpdK3TOjqd7t2EdxN0Ot1dZ3c6na51dqfT6VpndzqdrnV2p9Pp3k3Q6XR3nbuOTqdrndbR6XSt0zo6na51Wken072bsDudTnfX2Z1Op2ud3el0utbZnU7XOq2j0+t0uncTD1gO4zoT5doZAAAAAElFTkSuQmCC);
+        -ms-touch-action: none
+    }
+
+    .amap-drags, .amap-layers {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        overflow: hidden
+    }
+
+    .amap-layer img {
+        pointer-events: none
+    }
+
+    .amap-e, .amap-maps {
+        width: 100%;
+        height: 100%
+    }
+
+    .amap-maps, .amap-e, .amap-layers, .amap-tile, .amap-tile-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        overflow: hidden
+    }
+
+    .amap-context {
+        position: absolute;
+        left: 0;
+        top: 0
+    }
+
+    .amap-overlays, .amap-markers, .amap-marker {
+        position: absolute;
+        left: 0;
+        top: 0
+    }
+
+    .amap-layers {
+        z-index: 0
+    }
+
+    .amap-overlays {
+        z-index: 110;
+        cursor: default
+    }
+
+    .amap-markers {
+        z-index: 120
+    }
+
+    .amap-controls {
+        z-index: 150
+    }
+
+    .amap-copyright {
+        position: absolute;
+        display: block !important;
+        left: 70px;
+        height: 16px;
+        bottom: 0;
+        font-size: 11px;
+        line-height: 16px;
+        font-family: Arial, sans-serif;
+        z-index: 160
+    }
+
+    .amap-logo {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 160;
+        height: 17px;
+        line-height: 16px;
+        margin: 0 1px
+    }
+
+    .amap-logo img {
+        width: 67px !important;
+        height: 16px !important;
+        border: 0;
+        vertical-align: baseline !important
+    }
+
+    .amap-icon {
+        position: relative;
+        z-index: 1;
+        overflow: hidden
+    }
+
+    .amap-icon img {
+        position: absolute;
+        z-index: -1
+    }
+
+    .amap-marker-label {
+        position: absolute;
+        z-index: 2;
+        border: 1px solid blue;
+        background-color: white;
+        white-space: nowrap;
+        cursor: default;
+        padding: 3px;
+        font-size: 12px;
+        line-height: 14px
+    }
+
+    .amap-info {
+        position: absolute;
+        left: 0;
+        z-index: 140;
+        width: 320px
+    }
+
+    .amap-menu {
+        position: absolute;
+        z-index: 140;
+        _width: 100px
+    }
+
+    .amap-info-close {
+        position: absolute;
+        right: 5px;
+        _right: 12px;
+    + right: 11 px;
+        top: 5px;
+        _top: 2px;
+    + top: 2 px;
+        color: #c3c3c3;
+        text-decoration: none;
+        font: bold 16px/14px Tahoma, Verdana, sans-serif;
+        width: 14px;
+        height: 14px
+    }
+
+    .amap-info-outer, .amap-menu-outer {
+        box-shadow: 0 3px 14px rgba(0, 0, 100, 0.6);
+        background: none repeat scroll 0 0 white;
+        border-radius: 2px;
+        padding: 1px;
+        text-align: left;
+        border: #c0c0c0 solid 1px
+    }
+
+    .amap-info-outer:hover, .amap-menu-outer:hover {
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.75)
+    }
+
+    .amap-info-content {
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 10px 18px 10px 10px;
+    + margin: 0 10 px;
+    + padding: 10 px 0;
+        line-height: 1.4;
+        overflow: auto
+    }
+
+    .amap-marker-content {
+        position: relative
+    }
+
+    .amap-info {
+        _width: 320px
+    }
+
+    .amap-menu {
+        _width: 100px
+    }
+
+    .amap-info-sharp {
+        height: 23px;
+        margin: 0 auto;
+        overflow: hidden;
+        position: relative;
+        top: -1px;
+        width: 30px;
+        background-image: url(https://webapi.amap.com/theme/v1.3/sharp.png);
+        _background-image: url(https://webapi.amap.com/theme/v1.3/sharp.gif)
+    }
+
+    .amap-menu-outer {
+        margin: 0;
+        padding: 0;
+        list-style-type: none
+    }
+
+    ul.amap-menu-outer li {
+        cursor: pointer;
+        height: 35px;
+        line-height: 35px;
+        word-break: break-all;
+        padding: 0 10px;
+        font-size: 12px;
+        white-space: nowrap
+    }
+
+    ul.amap-menu-outer li a {
+        text-decoration: none;
+        font-size: 13px;
+        margin: 0 5px;
+        color: #000;
+        padding: 5px 5px
+    }
+
+    ul.amap-menu-outer li:hover {
+        background-color: #f3f3ee
+    }
+
+    .amap-overlay-text-container {
+        display: block;
+        width: auto;
+        word-break: keep-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: #fff;
+        padding: 2px 3px;
+        border: 1px solid #ccc;
+        border-radius: 3px
+    }
+
+    .amap-overlay-text-container.amap-overlay-text-empty {
+        display: none
+    }</style>
+    <style type="text/css">.amap-indoor-map .label-canvas {
+        position: absolute;
+        top: 0;
+        left: 0
+    }
+
+    .amap-indoor-map .highlight-image-con * {
+        pointer-events: none
+    }
+
+    .amap-indoormap-floorbar-control {
+        position: absolute;
+        margin: auto 0;
+        bottom: 165px;
+        right: 12px;
+        width: 35px;
+        text-align: center;
+        line-height: 1.3em;
+        overflow: hidden;
+        padding: 0 2px
+    }
+
+    .amap-indoormap-floorbar-control .panel-box {
+        background-color: rgba(255, 255, 255, .9);
+        border-radius: 3px;
+        border: 1px solid #ccc
+    }
+
+    .amap-indoormap-floorbar-control .select-dock {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        height: 30px;
+        border: solid #4196ff;
+        border-width: 0 2px;
+        border-radius: 2px;
+        pointer-events: none;
+        background: linear-gradient(to bottom, #f6f8f9 0, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%)
+    }
+
+    .amap-indoor-map .transition {
+        transition: opacity .2s
+    }
+
+    ,
+    .amap-indoormap-floorbar-control .transition {
+        transition: top .2s, margin-top .2s
+    }
+
+    .amap-indoormap-floorbar-control .select-dock:after, .amap-indoormap-floorbar-control .select-dock:before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: 0;
+        top: 10px;
+        border: solid transparent;
+        border-width: 4px;
+        border-left-color: #4196ff
+    }
+
+    .amap-indoormap-floorbar-control .select-dock:after {
+        right: 0;
+        left: auto;
+        border-left-color: transparent;
+        border-right-color: #4196ff
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile {
+        width: 37px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .floor-btn {
+        height: 35px;
+        line-height: 35px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .select-dock {
+        height: 35px;
+        top: 36px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .select-dock:after, .amap-indoormap-floorbar-control.is-mobile .select-dock:before {
+        top: 13px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .floor-list-box {
+        height: 105px
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-item .floor-btn {
+        color: #555;
+        font-family: "Times New Roman", sans-serif, "Microsoft Yahei";
+        font-size: 16px
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-item.selected .floor-btn {
+        color: #000
+    }
+
+    .amap-indoormap-floorbar-control .floor-btn {
+        height: 28px;
+        line-height: 28px;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none
+    }
+
+    .amap-indoormap-floorbar-control .floor-btn:hover {
+        background-color: rgba(221, 221, 221, .4)
+    }
+
+    .amap-indoormap-floorbar-control .floor-minus, .amap-indoormap-floorbar-control .floor-plus {
+        position: relative;
+        text-indent: -1000em
+    }
+
+    .amap-indoormap-floorbar-control .floor-minus:after, .amap-indoormap-floorbar-control .floor-plus:after {
+        content: "";
+        position: absolute;
+        margin: auto;
+        top: 9px;
+        left: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border: solid transparent;
+        border-width: 10px 8px;
+        border-top-color: #777
+    }
+
+    .amap-indoormap-floorbar-control .floor-minus.disabled, .amap-indoormap-floorbar-control .floor-plus.disabled {
+        opacity: .3
+    }
+
+    .amap-indoormap-floorbar-control .floor-plus:after {
+        border-bottom-color: #777;
+        border-top-color: transparent;
+        top: -3px
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-box {
+        max-height: 153px;
+        position: relative;
+        overflow-y: hidden
+    }
+
+    .amap-indoormap-floorbar-control .floor-list {
+        margin: 0;
+        padding: 0;
+        list-style: none
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-item {
+        position: relative
+    }
+
+    .amap-indoormap-floorbar-control .floor-btn.disabled, .amap-indoormap-floorbar-control .floor-btn.disabled *, .amap-indoormap-floorbar-control.with-indrm-loader * {
+        -webkit-pointer-events: none !important;
+        pointer-events: none !important
+    }
+
+    .amap-indoormap-floorbar-control .with-indrm-loader .floor-nonas {
+        opacity: .5
+    }
+
+    .amap-indoor-map-moverf-marker {
+        color: #555;
+        background-color: #FFFEEF;
+        border: 1px solid #7E7E7E;
+        padding: 3px 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        display: inline-block;
+        position: absolute;
+        top: 1em;
+        left: 1.2em
+    }
+
+    .amap-indoormap-floorbar-control .amap-indrm-loader {
+        -moz-animation: amap-indrm-loader 1250ms infinite linear;
+        -webkit-animation: amap-indrm-loader 1250ms infinite linear;
+        animation: amap-indrm-loader 1250ms infinite linear;
+        border: 2px solid #91A3D8;
+        border-right-color: transparent;
+        box-sizing: border-box;
+        display: inline-block;
+        overflow: hidden;
+        text-indent: -9999px;
+        width: 13px;
+        height: 13px;
+        border-radius: 7px;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0
+    }
+
+    @-moz-keyframes amap-indrm-loader {
+        0% {
+            -moz-transform: rotate(0deg);
+            transform: rotate(0deg)
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+            transform: rotate(360deg)
+        }
+    }
+
+    @-webkit-keyframes amap-indrm-loader {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg)
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg)
+        }
+    }
+
+    @keyframes amap-indrm-loader {
+        0% {
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg)
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg)
+        }
+    }</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="https://www.qxwz.com/favicon.ico">
+    <title>共享单车监管平台</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_474358_b0i1p71p98qnz5mi.css">
+    <link rel="stylesheet" href="/pace.flash.css">
+    <script src="/pace.js"></script>
+    <link href="/static/css/main.2fac916b.css" rel="stylesheet">
+    <style type="text/css">.amap_markers_pop_window {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fff;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .amap_markers_pop_window::before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        margin-left: -7px;
+        width: 0;
+        height: 0;
+        border-top: 12px solid #ddd;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+    }
+
+    .amap_markers_pop_window::after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        bottom: -11px;
+        left: 50%;
+        margin-left: -6px;
+        width: 0;
+        height: 0;
+        border-top: 11px solid #fff;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+    }
+
+    .amap_markers_pop_window_item {
+        cursor: pointer;
+        width: 40px;
+        height: 50px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .amap_markers_pop_window_item span {
+        pointer-events: none;
+    }
+
+    .amap_markers_window_overflow_warning {
+        text-align: center;
+        width: 100%;
+        margin: 5px 0;
+        color: #666;
+    }</style>
+    <style type="text/css">.amap-container {
+        cursor: url(https://webapi.amap.com/theme/v1.3/openhand.cur), default;
+    }
+
+    .amap-drag {
+        cursor: url(https://webapi.amap.com/theme/v1.3/closedhand.cur), default;
+    }</style>
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/fontcustom/fontcustom.css"
+          rel="stylesheet" type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/jlzs.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/select.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/input.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/checkbox.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/fontcustom/fontcustom.css"
+          rel="stylesheet" type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/jlzs.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/select.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/input.css" rel="stylesheet"
+          type="text/css">
+    <link href="chrome-extension://iihgchombimnadbbapofogflgbifgbgl/content/css/checkbox.css" rel="stylesheet"
+          type="text/css">
+</head>
+<body class="  pace-done">
+<div class="pace  pace-inactive">
+    <div class="pace-progress" data-progress-text="100%" data-progress="99"
+         style="transform: translate3d(100%, 0px, 0px);">
+        <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div>
+</div>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root">
+    <div class="base-layout ant-layout">
+        <div class="base-layout-header ant-layout-header">
+            <div class="ant-row" style="margin-left: -10px; margin-right: -10px;">
+                <div class="ant-col-4" style="padding-left: 10px; padding-right: 10px;">
+                    <button type="button" class="ant-btn logo"><img src="/img/logo.svg" alt="共享单车监管平台"></button>
+                </div>
+                <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">
+                    <ul class="ant-menu ant-menu-light ant-menu-root ant-menu-horizontal" role="menu"
+                        style="line-height: 62px; border: none;">
+                        <li class="ant-menu-item ant-menu-item-selected" role="menuitem"><a
+                                href="/distribution">车辆分布</a></li>
+                        <li class="ant-menu-item" role="menuitem"><a href="/analyse">数据大盘</a></li>
+                        <li class="ant-menu-item" role="menuitem"><a href="/monitor">围栏监管</a></li>
+                        <li class="ant-menu-item" role="menuitem"><a href="/npfencesmap">禁停区监管</a></li>
+                        <li class="ant-menu-submenu ant-menu-submenu-horizontal" role="menuitem">
+                            <div class="ant-menu-submenu-title" aria-expanded="false" aria-haspopup="true" title="系统管理">
+                                系统管理<i class="ant-menu-submenu-arrow"></i></div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="ant-col-8" style="padding-left: 10px; padding-right: 10px;"><p
+                        style="text-align: right; margin-right: 10px;">上海产业技术研究院<a style="margin-left: 20px;">退出</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="base-layout-content ant-layout-content">
+            <div class="amap-wrapper">
+                <div style="width: 100%; height: 100%; position: relative;">
+                    <div class="amap-container"
+                         style="width: 100%; height: 100%; position: relative; background: rgb(252, 249, 242); cursor: pointer;">
+                        <object style="display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;"
+                                type="text/html" data="about:blank"></object>
+                        <div class="amap-maps">
+                            <div class="amap-drags" style="">
+                                <div class="amap-layers" style="transform: translateZ(0px);">
+                                    <div class="amap-markers"
+                                         style="position: absolute; z-index: 120; top: 324px; left: 896px;">
+                                        <div class="amap-marker"
+                                             style="top: 18px; left: -548px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(53, 103, 253);"><h1>
+                                                            南码头路街道</h1>
+                                                            <p>总量: 2,840</p>
+                                                            <p>活跃率: 49.05%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: 31px; left: 59px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(53, 103, 253);"><h1>张江镇</h1>
+                                                            <p>总量: 9,842</p>
+                                                            <p>活跃率: 49.15%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -120px; left: -326px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(51, 102, 255);"><h1>花木街道</h1>
+                                                            <p>总量: 9,387</p>
+                                                            <p>活跃率: 53.14%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -105px; left: -513px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(51, 102, 255);"><h1>塘桥街道</h1>
+                                                            <p>总量: 3,968</p>
+                                                            <p>活跃率: 53.65%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -201px; left: -499px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(51, 102, 255);"><h1>
+                                                            潍坊新村街道</h1>
+                                                            <p>总量: 5,185</p>
+                                                            <p>活跃率: 55.51%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: 146px; left: -298px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(70, 112, 236);"><h1>北蔡镇</h1>
+                                                            <p>总量: 7,788</p>
+                                                            <p>活跃率: 40.41%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: 88px; left: -602px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(54, 104, 252);"><h1>周家渡街道</h1>
+                                                            <p>总量: 4,101</p>
+                                                            <p>活跃率: 48.72%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -372px; left: -6px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(51, 102, 255);"><h1>金桥镇</h1>
+                                                            <p>总量: 7,798</p>
+                                                            <p>活跃率: 53.94%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -220px; left: 303px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(67, 110, 239);"><h1>唐镇</h1>
+                                                            <p>总量: 3,392</p>
+                                                            <p>活跃率: 42.04%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -510px; left: -97px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(51, 102, 255);"><h1>浦兴路街道</h1>
+                                                            <p>总量: 3,338</p>
+                                                            <p>活跃率: 54.52%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -405px; left: -231px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(53, 103, 253);"><h1>
+                                                            金杨新村街道</h1>
+                                                            <p>总量: 4,769</p>
+                                                            <p>活跃率: 49.15%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -298px; left: -361px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(63, 108, 243);"><h1>洋泾街道</h1>
+                                                            <p>总量: 4,756</p>
+                                                            <p>活跃率: 44.22%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: 128px; left: -743px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(59, 106, 247);"><h1>
+                                                            上钢新村街道</h1>
+                                                            <p>总量: 4,079</p>
+                                                            <p>活跃率: 46.24%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: -275px; left: -553px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(52, 103, 254);"><h1>陆家嘴街道</h1>
+                                                            <p>总量: 7,970</p>
+                                                            <p>活跃率: 49.59%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="amap-marker"
+                                             style="top: 375px; left: -612px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                            <div class="amap-marker-content" style="opacity: 1;">
+                                                <div>
+                                                    <div>
+                                                        <div class="district-marker"
+                                                             style="background-color: rgb(73, 113, 233);"><h1>三林镇</h1>
+                                                            <p>总量: 12,554</p>
+                                                            <p>活跃率: 38.82%</p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <canvas class="amap-layer" width="1500" height="747"
+                                            style="position: absolute; z-index: 0; transform-origin: 750px 373.5px 0px; transform: scale3d(0.8, 0.8, 1); top: -75px; left: -150px; height: 747px; width: 1500px;"></canvas>
+                                    <canvas class="amap-layer amap-vectors" width="1500" height="747"
+                                            style="position: absolute; z-index: 110; transform-origin: 750px 373.5px 0px; transform: scale3d(0.8, 0.8, 1); top: -75px; left: -150px;"></canvas>
+                                    <canvas class="amap-labels" draggable="false" width="2400" height="1196"
+                                            style="position: absolute; z-index: 99; height: 598px; width: 1200px; top: 0px; left: 0px;"></canvas>
+                                </div>
+                                <div class="amap-overlays" style=""></div>
+                            </div>
+                        </div>
+                        <div style="display: none;">
+                            <div class="amap-marker"
+                                 style="top: 392px; left: -125px; z-index: 100; transform: rotate(0deg); transform-origin: 55px 55px 0px; display: block;">
+                                <div class="amap-marker-content" style="opacity: 1;">
+                                    <div>
+                                        <div>
+                                            <div class="district-marker" style="background-color: rgb(70, 112, 236);">
+                                                <h1>康桥镇</h1>
+                                                <p>总量: 6,051</p>
+                                                <p>活跃率: 40.36%</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="amap-controls">
+                            <div class="amap-maptypecontrol" style="visibility: visible;">
+                                <div class="amap-maptype-wrap">
+                                    <div class="amap-maptype-con">
+                                        <div class="amap-maptype-win"><img
+                                                src="https://webst02.is.autonavi.com/appmaptile?style=6&amp;x=6863&amp;y=3346&amp;z=13"
+                                                style="visibility: inherit; position: absolute; left: -253.227px; top: -185.812px;"><img
+                                                src="https://webst03.is.autonavi.com/appmaptile?style=6&amp;x=6864&amp;y=3346&amp;z=13"
+                                                style="visibility: inherit; position: absolute; left: 2.77265px; top: -185.812px;"><img
+                                                src="https://webst01.is.autonavi.com/appmaptile?style=6&amp;x=6866&amp;y=3346&amp;z=13"
+                                                style="visibility: hidden; position: absolute; left: 50.7726px; top: -202.312px;"><img
+                                                src="https://webst02.is.autonavi.com/appmaptile?style=6&amp;x=6866&amp;y=3347&amp;z=13"
+                                                style="visibility: hidden; position: absolute; left: 50.7726px; top: 53.6876px;">
+                                        </div>
+                                        <div class="amap-maptype-title">卫星</div>
+                                    </div>
+                                </div>
+                                <div class="amap-maptype-list" style="width: 60px; display: block; height: 20px;"><p
+                                        class="amap-maptype-item" title="" style="display: block;"><span
+                                        class="amap-maptype-check"></span><span class="amap-maptype-label">路况</span></p>
+                                    <p class="amap-maptype-item" title="" style="display: none;"><span
+                                            class="amap-maptype-check"></span><span class="amap-maptype-label">路网</span>
+                                    </p></div>
+                            </div>
+                        </div>
+                        <a class="amap-logo" href="http://gaode.com" target="_blank" style="display: block;"><img
+                                src="https://webapi.amap.com/theme/v1.3/mapinfo_05.png"></a>
+                        <div class="amap-copyright" style="display: none; visibility: visible;"><!--v1.4.6--> © 2018
+                            AutoNavi <span class="amap-mcode">- GS(2018)1709号</span></div>
+                    </div>
+                    <div>
+                        <div>
+                            <button type="button" class="ant-btn distribution-setting" style=""><i
+                                    class="anticon anticon-setting"></i><span>统计样式</span></button>
+                        </div>
+                        <div class="ant-row-flex distribution-controls" style="margin-left: -5px; margin-right: -5px;">
+                            <div class="" style="padding-left: 5px; padding-right: 5px; width: 110px;"></div>
+                            <div class="" style="padding-left: 5px; padding-right: 5px;">
+                                <button type="button" class="ant-btn"><i class="anticon anticon-arrows-alt"></i><span>启用全屏</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="distribution-info">
+                            <div class="distribution-info-block"><h2
+                                    style="margin-bottom: 12px; padding-bottom: 12px; font-size: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                泊位数：25,447</h2>
+                                <h2>车辆总数：139,496</h2>
+                                <div class="ant-row-flex" style="margin-left: -10px; margin-right: -10px;">
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">
+                                        ofo：48,587
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">摩拜：58,133
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">其他：28,079
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">享骑：4,697
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="distribution-info-block"><h2>活跃车辆数：59,632</h2>
+                                <div class="ant-row-flex" style="margin-left: -10px; margin-right: -10px;">
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">
+                                        ofo：15,547
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">摩拜：30,994
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">其他：10,534
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">享骑：2,557
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="distribution-info-block"><h2>不活跃车辆数：79,864</h2>
+                                <div class="ant-row-flex" style="margin-left: -10px; margin-right: -10px;">
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">
+                                        ofo：33,040
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">摩拜：27,139
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">其他：17,545
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">享骑：2,140
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="distribution-info-block"><h2>车辆活跃率：42.75%</h2>
+                                <div class="ant-row-flex" style="margin-left: -10px; margin-right: -10px;">
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">
+                                        ofo：32.00%
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">摩拜：53.32%
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">其他：37.52%
+                                    </div>
+                                    <div class="ant-col-12" style="padding-left: 10px; padding-right: 10px;">享骑：54.44%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="ant-btn amap-area-btn" style=""><span>浦东新区</span><i
+                                class="anticon anticon-down"></i></button>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tooltip"></div>
+<script type="text/javascript" src="/static/js/main.2c6d6ad0.js"></script>
+<script type="text/javascript" async="" defer=""
+        src="https://webapi.amap.com/maps?v=1.4.6&amp;key=d0071c938e5f493ebef7d26ba7c31279&amp;callback=__amap_init_callback"></script>
+<div id="jlzsCpn_0_component_0" class=" jlzs-container jlzs-gate" style="height: 662px;"></div>
+<div style="position: absolute; top: 0px; left: 0px; width: 100%;">
+    <div>
+        <div class="ant-popover  ant-popover-placement-bottomLeft  ant-popover-hidden"
+             style="left: 964px; top: 128px; transform-origin: 382px -4px 0px;">
+            <div class="ant-popover-content">
+                <div class="ant-popover-arrow"></div>
+                <div class="ant-popover-inner">
+                    <div>
+                        <div class="ant-popover-inner-content">
+                            <div style="width: 350px; margin-bottom: -25px;">
+                                <form novalidate="" class="ant-form ant-form-horizontal">
+                                    <div class="ant-row ant-form-item">
+                                        <div class="ant-form-item-label ant-col-xs-24 ant-col-sm-6"><label
+                                                for="root_visibleType" class="" title=""><span>统计样式</span></label></div>
+                                        <div class="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-16">
+                                            <div class="ant-form-item-control has-success"><span
+                                                    class="ant-form-item-children"><div class="ant-radio-group"><label
+                                                    class="ant-radio-wrapper ant-radio-wrapper-checked"><span
+                                                    class="ant-radio ant-radio-checked"><input type="radio"
+                                                                                               class="ant-radio-input"
+                                                                                               value="circle"><span
+                                                    class="ant-radio-inner"></span></span><span>数量</span></label><label
+                                                    class="ant-radio-wrapper"><span class="ant-radio"><input
+                                                    type="radio" class="ant-radio-input" value="heatmap"><span
+                                                    class="ant-radio-inner"></span></span><span>热力图</span></label><label
+                                                    class="ant-radio-wrapper"><span class="ant-radio"><input
+                                                    type="radio" class="ant-radio-input" value="region"><span
+                                                    class="ant-radio-inner"></span></span><span>区域</span></label></div></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span></span></form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="position: absolute; top: 0px; left: 0px; width: 100%;">
+    <div>
+        <div class="ant-popover  ant-popover-placement-bottomLeft  ant-popover-hidden"
+             style="left: 20px; top: 120px; transform-origin: 0px -4px 0px;">
+            <div class="ant-popover-content">
+                <div class="ant-popover-arrow"></div>
+                <div class="ant-popover-inner">
+                    <div>
+                        <div class="ant-popover-inner-content">
+                            <div style="width: 320px;">
+                                <div class="area-content">
+                                    <div><h1>可选区</h1>
+                                        <div><a>浦东新区</a></div>
+                                    </div>
+                                    <div><h1>可选街道</h1>
+                                        <div><a>新场镇</a><a>洋泾街道</a><a>惠南镇</a><a>高东镇</a><a>高行镇</a><a>宣桥镇</a><a>金桥镇</a><a>祝桥镇</a><a>三林镇</a><a>周浦镇</a><a>陆家嘴街道</a><a>张江镇</a><a>唐镇</a><a>沪东新村街道</a><a>芦潮港农场</a><a>上钢新村街道</a><a>浦兴路街道</a><a>北蔡镇</a><a>老港镇</a><a>朝阳农场</a><a>康桥镇</a><a>花木街道</a><a>南汇新城镇</a><a>高桥镇</a><a>潍坊新村街道</a><a>万祥镇</a><a>泥城镇</a><a>曹路镇</a><a>周家渡街道</a><a>川沙新镇</a><a>书院镇</a><a>航头镇</a><a>外高桥保税区</a><a>大团镇</a><a>南码头路街道</a><a>塘桥街道</a><a>合庆镇</a><a>金杨新村街道</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html, #allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=WcaGTfLckYD40HKYkyMLEcqU9fgYbsIW"></script>
+	<script type="text/javascript" src="/js/jQuery.js"></script>
+    <script type="text/javascript" src="/js/Zhuangjiang.js"></script>
+    <script type="text/javascript" src="/js/taiwanSouthSeaLabel.js"></script>
+    <script type="text/javascript" src="/js/areas.js"></script>
+    <script type="text/javascript" src="/js/coordinateTransformation.js"></script>
+	<script type="text/javascript" src="/js/查询6.13号这一天最后ofo车辆所在位置(所上传的位置).js"></script>
+	<script type="text/javascript" src="/js/查询6.13号这一天最后mobike车辆所在位置(所上传的位置).js"></script>
+	<script type="text/javascript" src="/js/查询6.13号这一天最后xq车辆所在位置(所上传的位置).js"></script>
+	<script type="text/javascript" src="/js/GeoUtils.js"></script>
+	<script type="text/javascript" src="/js/EditMarkerClusterer.js"></script>
+	<script type="text/javascript" src="/js/EditTextIconOverlay.js"></script>
+	<title>共享单车</title>
+</head>
+<body id="allBody">
+	<div id="header">请输入查询日期:<input type="text" id="searchDate" size="20" value="${searchDate}" placeholder="2018-06-13(默认)" style="width:500px;" /></div>
+
+	<div id="allmap"></div>
+
+	<script type="text/javascript">
+        // 百度地图初始化
+			var map = new BMap.Map("allmap");
+        var point = new BMap.Point(121.686189,31.141055);
+        map.centerAndZoom(point, 11);
+        map.enableScrollWheelZoom();
+        //往地图中添加控件
+        map.addControl(new BMap.NavigationControl());    //地图平移缩放控件PC端默认位于地图左上方，它包含控制地图的平移和缩放的功能。移动端提供缩放控件，默认位于地图右下方。
+        map.addControl(new BMap.OverviewMapControl());   //添加缩略地图控件，默认位于地图右下方，是一个可折叠的缩略地图。
+        map.addControl(new BMap.ScaleControl());     //比例尺控件，默认位于地图左下方，显示地图的比例关系。
+        map.addControl(new BMap.MapTypeControl());   //地图类型控件，默认位于地图右上方。
+        map.addControl(new BMap.GeolocationControl());   //定位控件，针对移动端开发，默认位于地图左下方。
+        map.addControl(new BMap.CopyrightControl());     //版权控件，默认位于地图左下方。
+
+        /*设置覆盖物的样式*/
+        //设置圆形覆盖物的样子
+        /*var styleOptions = {
+            strokeColor:"pink",    //边线颜色。
+            strokeWeight: 11,       //边线的宽度，以像素为单位。
+            strokeOpacity: 0.8,       //边线透明度，取值范围0 - 1。
+            fillColor:"red",      //填充颜色。当参数为空时，圆形将没有填充效果。
+            fillOpacity: 1,      //填充的透明度，取值范围0 - 1。
+            strokeStyle: 'solid' //边线的样式，solid或dashed。
+            }
+        //设置ofo海量点的样子
+        var options_ofo = {
+            size: BMAP_POINT_SIZE_BIG,
+            shape: BMAP_POINT_SHAPE_CIRCLE,//默认,圆形
+            //shape: BMAP_POINT_SHAPE_WATERDROP,//水滴状,无size和color属性
+            //color: '#d340c3'
+            color: '#ffe900'
+        }
+        //设置mobike海量点的样子
+        var options_mobike = {
+            size: BMAP_POINT_SIZE_BIG,
+            shape: BMAP_POINT_SHAPE_CIRCLE,//默认,圆形
+            color: '#FF6100'
+        }
+        //设置xq海量点的样子
+        var options_xq = {
+            size: BMAP_POINT_SIZE_BIG,
+            shape: BMAP_POINT_SHAPE_CIRCLE,//默认,圆形
+            color: '#9ACD32'
+        }*/
+        //DOM加载完毕之后执行。
+        //$(function(){
+        /*$("#searchDate").change(function(){
+            var searchDate = document.getElementById("searchDate").value;
+            $.ajax({
+                url:"/index",
+                type: "post",
+                async : true,
+                data:{searchDate:searchDate},
+                // contentType:'application/json; charset=utf-8',
+                // dataType:"html",//返回整合HTML
+                dataType: "json",//返回json格式设置
+                success:function(data){
+                    //$("#allBody").html(data);//刷新整个body页面的html
+                    // window.location.reload(true);//刷新页面
+                    //location.replace(location.href);
+                    window.location.replace("/index");
+                    //$(this).val(""); //清空上次input框里的数据
+                    //$('#hezi').val(data['boxnum']);  //往input框里传值
+                }
+            });
+        });*/
+
+        //var globalFlag = 0;
+        /*var points_ofo = [];  // 添加海量点数据
+        var points_mobike = [];  // 添加海量点数据
+        var points_xq = [];  // 添加海量点数据*/
+        var markersOfo = [];// 添加大量的Marker
+        var markersMobike = [];// 添加大量的Marker
+        var markersXq = [];// 添加大量的Marker
+        //通过ajax得到ofo点集合
+        //$.ajaxSettings.async = false;//禁止异步
+        // $.getJSON("json/查询6.13号这一天最后ofo车辆所在位置(所上传的位置).json", function (data) {
+        $.ajaxSettings.async = false;//禁止异步
+        $.getJSON("/getOfoLastPositionData", function (data) {
+            //var a = 0;
+            //console.log(data.result);
+            $.each(data.result, function (index, value) {
+                // points_ofo.push(pt);
+                markersOfo.push(new BMap.Marker(new BMap.Point(value.lng, value.lat)));
+                //a = a+1;
+                //console.log(value.lng, value.lat);
+            });
+            //console.log(a);//可以知道如果出现卡顿都是因为生成覆盖物等操作,对于数据的读取还是很快的.
+        });
+        var markerClustererOfo = new BMapLib.MarkerClusterer(map, {markers:markersOfo});
+
+        // var pointCollection = new BMap.PointCollection(points_ofo, options_ofo);  // 初始化PointCollection
+        // pointCollection.disableMassClear();//设置这个覆盖物禁止移除
+
+
+        //通过ajax得到mobike点集合
+        $.getJSON("/getMobikeLastPositionData", function (data) {
+            $.each(data.result, function (index, value) {
+                // points_mobike.push(new BMap.Point(value.lng, value.lat));
+                // pt = new BMap.Point(value.lng, value.lat)
+                // points_ofo.push(pt);
+                markersMobike.push(new BMap.Marker(new BMap.Point(value.lng, value.lat)));
+            });
+
+        });
+        var markerClustererMobike = new BMapLib.MarkerClusterer(map, {markers:markersMobike});
+        // var pointCollection_mobike = new BMap.PointCollection(points_mobike, options_mobike);  // 初始化PointCollection
+        // pointCollection_mobike.disableMassClear();//设置这个覆盖物禁止移除
+
+        //通过ajax得到xq点集合
+        $.getJSON("/getXqLastPositionData", function (data) {
+            $.each(data.result, function (index, value) {
+                // points_xq.push(new BMap.Point(value.lng, value.lat));
+                // pt = new BMap.Point(value.lng, value.lat)
+                // points_ofo.push(pt);
+                markersXq.push(new BMap.Marker(new BMap.Point(value.lng, value.lat)));
+            });
+
+        });
+        // var markerClustererXq = new BMapLib.MarkerClusterer(map, {markers:markersXq});
+        // var pointCollection_xq = new BMap.PointCollection(points_xq, options_xq);  // 初始化PointCollection
+        // pointCollection_xq.disableMassClear();//设置这个覆盖物禁止移除
+
+        $.ajaxSettings.async = true;//异步执行
+        //下面是对照组，注释掉上面三行，使用下面两行，可以看到对照差别。
+        /*var  markers = markersOfo.concat(markersMobike,markersXq);
+        var markerClusterers = new BMapLib.MarkerClusterer(map, {markers:markers});*/
+
+
+        /*//创建初始覆盖物
+        var circle = new BMap.Circle(point,7000,styleOptions); //创建圆形覆盖物
+        circle.disableMassClear();//设置这个圆形覆盖物禁止移除
+        var label_1 = new BMap.Label("浦东新区", {position:point, offset : new BMap.Size(-35,-30)});  // 创建文本标注对象
+        var label_2 = new BMap.Label("单车总数:${totalBikeAmount}", {position : point, offset : new BMap.Size(-54, -10)});//创建文本标注对象
+        label_1.disableMassClear();//设置这个覆盖物禁止移除
+        label_2.disableMassClear();//设置这个覆盖物禁止移除
+        label_1.setStyle({
+            color : "#FFF",
+            backgroundColor:'transparent',//文本背景色
+            borderColor:'transparent',//文本框边框色
+            fontSize : "16px",
+            height : "20px",
+            lineHeight : "20px",
+            fontFamily:"微软雅黑"
+        });
+        label_2.setStyle({
+            color : "#FFF",
+            backgroundColor:'transparent',//文本背景色
+            borderColor:'transparent',//文本框边框色
+            fontSize : "13px",
+            height : "20px",
+            lineHeight : "20px",
+            fontFamily:"微软雅黑"
+        });
+
+        //添加覆盖物
+        addlabel();//添加中国版图标识
+        map.addOverlay(circle);           //增加圆
+        map.addOverlay(label_1);            //增加文字标签
+        map.addOverlay(label_2);           //增加文字标签*/
+        /*map.addOverlay(pointCollection);  // 添加海量点
+        map.addOverlay(pointCollection_mobike);  // 添加海量点
+        map.addOverlay(pointCollection_xq);  // 添加海量点*/
+
+
+        /*//ofo的点集合的点击事件
+    	pointCollection.addEventListener('click', function (e) {
+    		map.clearOverlays();//移除所有覆盖物,可能不是第一次单击,所以若不是第一次移除之前添加的标签和路径
+            globalFlag = 0;
+    		var lab1 = new BMap.Label("ofo",{position:e.point});        //创建label
+            map.addOverlay(lab1);
+//          map.zoomIn();//放大一级视图
+//          alert('单击点的坐标为：' + e.point.lng + ',' + e.point.lat);  // 监听点击事件
+//			pointCollection.enableMassClear();//设置覆盖物可移除
+// 		    $.getJSON("json/6.13号ofo单车的所有记录.json", function (data) {
+		    $.getJSON("/getOfoAllPositionByTime", function (data) {
+		    	var bicycleId;
+		    	//找到当前点击的点对应的车的id
+		        $.each(data.result, function (index, value) {
+		        	if(value.lng == e.point.lng && value.lat == e.point.lat){
+		        		bicycleId = value.bicycle_id;
+		        		return false;//结束循环
+		        	}
+		        });
+		        //创建骑行路线
+		        var riding = new BMap.RidingRoute(map, {
+				    renderOptions: {
+				        map: map,
+				        autoViewport: true
+				   	}
+				});
+				//绘制拿到的单车id的所有轨迹
+				var flag = 0;
+				var count =0;
+				var start;
+				var end;
+		        $.each(data.result, function (index, value) {
+		        	if(bicycleId == value.bicycle_id){
+		        		count++;
+		        		if(flag == 0){
+		        			start = new BMap.Point(value.lng, value.lat);
+		        			flag = 1;
+
+		        		}else if(flag == 1){
+		        			end = new BMap.Point(value.lng, value.lat);
+		        			riding.search(start, end);
+		        			start = new BMap.Point(value.lng, value.lat);
+		        		}
+		        	}
+		        });
+		        if(count <= 1){
+		        	var lab1_after = new BMap.Label("当前未骑动",{position:e.point});
+		        	map.addOverlay(lab1_after);
+		        }
+		    });
+
+        });
+
+        pointCollection_mobike.addEventListener('click', function (e) {
+    		map.clearOverlays();//移除所有覆盖物,可能不是第一次单击,所以若不是第一次移除之前添加的标签和路径
+            globalFlag = 0;
+    		var lab1 = new BMap.Label("mobike",{position:e.point});        //创建label
+            map.addOverlay(lab1);
+		    $.getJSON("json/6.13号mobike单车的所有记录.json", function (data) {
+		    	var bicycleId;
+		    	//找到当前点击的点对应的车的id
+		        $.each(data, function (index, value) {
+		        	if(value.lng == e.point.lng && value.lat == e.point.lat){
+		        		bicycleId = value.bicycle_id;
+		        		return false;//结束循环
+		        	}
+		        });
+
+		        //创建骑行路线
+		        var riding = new BMap.RidingRoute(map, {
+				    renderOptions: {
+				        map: map,
+				        autoViewport: true
+				   	}
+				});
+				//绘制拿到的单车id的所有轨迹
+				var flag = 0;
+				var count =0;
+				var start;
+				var end;
+		        $.each(data, function (index, value) {
+		        	if(bicycleId == value.bicycle_id){
+		        		count++;
+		        		if(flag == 0){
+		        			start = new BMap.Point(value.lng, value.lat);
+		        			flag = 1;
+
+		        		}else if(flag == 1){
+		        			end = new BMap.Point(value.lng, value.lat);
+		        			riding.search(start, end);
+		        			start = new BMap.Point(value.lng, value.lat);
+		        		}
+		        	}
+		        });
+		        if(count <= 1){
+		        	var lab1_after = new BMap.Label("当前未骑动",{position:e.point});
+		        	map.addOverlay(lab1_after);
+		        }
+		    });
+
+        });
+
+        pointCollection_xq.addEventListener('click', function (e) {
+    		map.clearOverlays();//移除所有覆盖物,可能不是第一次单击,所以若不是第一次移除之前添加的标签和路径
+            globalFlag = 0;
+    		var lab1 = new BMap.Label("xq",{position:e.point});        //创建label
+            map.addOverlay(lab1);
+			$.ajaxSetup({ async: false });//禁止异步
+		    $.getJSON("json/6.13号xq单车的所有记录.json", function (data) {
+		    	var bicycleId;
+		    	//找到当前点击的点对应的车的id
+		        $.each(data, function (index, value) {
+		        	if(value.lng == e.point.lng && value.lat == e.point.lat){
+		        		bicycleId = value.bicycle_id;
+		        		return false;//结束循环
+		        	}
+		        });
+		        //创建骑行路线
+		        var riding = new BMap.RidingRoute(map, {
+				    renderOptions: {
+				        map: map,
+				        autoViewport: true
+				   	}
+				});
+				//绘制拿到的单车id的所有轨迹
+				var flag = 0;
+				var count = 0;
+				var start;
+				var end;
+				console.log(count+"AAA");
+//				$.ajaxSetup({ async: false });
+				var arrPath = [];  // 用来存储同一个共享单车的路径经纬度
+				arrPath.push("beginning_lng_lat");
+		        $.each(data, function (index, value) {
+		        	if(bicycleId == value.bicycle_id ){
+		        		//判断是否重复(用一个数组来存储经纬度,下一个进来以后判断是否已经在数组中存在了.存在则跳过)
+		        		if($.inArray(""+value.lng+value.lat, arrPath) >= 0){//$.inArray  jQuery中的方法
+               				return true;//相当于continue
+       					}else{
+		        			arrPath.push(""+value.lng+value.lat);
+		        			count++;
+			        		if(flag == 0){
+			        			start = new BMap.Point(value.lng, value.lat);
+			        			flag = 1;
+
+			        		}else if(flag == 1){
+			        			end = new BMap.Point(value.lng, value.lat);
+			        			riding.search(start, end);
+			        			start = new BMap.Point(value.lng, value.lat);
+			        		}
+		        		}
+		        	}
+		        });
+		        console.log(count+"BBB");
+		        if(count <= 1){
+		        	console.log(count+"CCC");
+		        	var lab1_after = new BMap.Label("当前未骑动",{position:e.point});
+		        	map.addOverlay(lab1_after);
+		        }
+		    });
+        });
+
+    	pointCollection.addEventListener('mouseover', function (e) {
+//  		var label = new BMap.Label("我是ofo",{offset:new BMap.Size(20,-10)});
+//			var label = new BMap.Label("ofo",{position:e.point});        //创建label
+//          map.addOverlay(label);
+        });
+        pointCollection.addEventListener('mouseout', function (e) {
+//  		map.clearOverlays();
+        });*/
+
+        /*circle.addEventListener("mouseover", addPuDongBoundary);
+        circle.addEventListener("mouseout", removeAllOverlay);
+        function removeAllOverlay(){
+            map.clearOverlays();
+        }
+        circle.addEventListener("click", circleClick);
+        function circleClick(){
+            map.setZoom(13);//点击圆形覆盖物,放大地图级别
+            map.clearOverlays();
+            addStreetTownBoundaryAndCircleOverlay();
+            globalFlag = 1;
+            circle.hide();
+            label_1.hide();
+            label_2.hide();
+            // map.clearOverlays();//移除所有覆盖物
+        }*/
+
+        /*//缩放完成时触发
+        map.addEventListener("zoomend", function(){
+            //console.log(map.getZoom());//打印当前的地图缩放级别
+            if(map.getZoom() > 12 || map.getZoom() <11){
+                circle.hide();
+                label_1.hide();
+                label_2.hide();
+                circle.removeEventListener("mouseout", removeAllOverlay);
+            }
+            if(map.getZoom() == 12 || map.getZoom() == 11){
+                circle.show();
+                label_1.show();
+                label_2.show();
+                circle.addEventListener("mouseout", removeAllOverlay);
+                // map.clearOverlays();//移除所有覆盖物
+            }
+            if(map.getZoom() == 13 && globalFlag == 0){
+                addStreetTownBoundaryAndCircleOverlay();
+                globalFlag = 1;
+            }
+            if(map.getZoom() <= 12){
+                map.clearOverlays();//移除所有覆盖物
+                globalFlag = 0;
+            }
+            if(map.getZoom() >= 14){
+                map.clearOverlays();//移除所有覆盖物
+                globalFlag = 0;
+                pointCollection.show();
+                pointCollection_mobike.show();
+                pointCollection_xq.show();
+            }
+            if(map.getZoom() < 14){
+                pointCollection.hide();
+                pointCollection_mobike.hide();
+                pointCollection_xq.hide();
+            }
+        });*/
+
+        // });//end $(function(){})
+
+        //浦东新区的区域边界多边形显示
+        function addPuDongBoundary() {
+            var plyPuDong;
+            var bdary = new BMap.Boundary();
+            bdary.get("上海市浦东新区", function(rs){       //获取行政区域
+                //map.clearOverlays();        //清除地图覆盖物
+                var count = rs.boundaries.length; //行政区域的点有多少个
+                if (count === 0) {
+                    alert('未能获取当前输入行政区域');
+                    return ;
+                }
+                //var pointArray = [];
+                for (var i = 0; i < count; i++) {
+                    plyPuDong = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 3, strokeColor: "#ff0000", fillColor:""}); //建立多边形覆盖物
+                    map.addOverlay(plyPuDong);  //添加覆盖物
+                    // plyPuDong.disableMassClear();//设置这个覆盖物禁止移除
+                    //plyPuDong.hide();
+                    // pointArray = pointArray.concat(plyPuDong.getPath()); //getPath拿到浦东多边形的经纬度
+                }
+                //map.setViewport(pointArray);    //调整视野
+            });
+        }
+
+        //街道镇行政边界 -- 向地图中添加线函数 -- 添加圆形覆盖物
+        function addStreetTownBoundaryAndCircleOverlay(){
+            // var points = [];
+            for(var j=0;j<areasData.length;j++){
+                var bd09 = gcj02tobd09(areasData[j].point.lon,areasData[j].point.lat)//将火星坐标系 (GCJ-02)与百度坐标系(BD-09)的转.即:谷歌、高德转百度
+                var point = new BMap.Point(bd09[0],bd09[1]);
+
+
+                var circle = new BMap.Circle(point,1000,areasData[j].circleOptions); //创建圆
+                // console.log(areasData[j].circleOptions);
+                //circle.disableMassClear();//设置这个圆形覆盖物禁止移除
+                map.addOverlay(circle);     //BMap.Size左边负的越多,越往左边,右边负的越多,越往上
+
+                //添加监听事件
+                (function() {
+                    // var thePoint = points[i];
+                    circle.addEventListener("click", function() {
+                        // showInfo(this,thePoint);
+                        map.setZoom(14);//点击圆形覆盖物,放大地图级别
+                    });
+                    /*circle.addEventListener("mouseover", addPuDongBoundary);
+                    circle.addEventListener("mouseout", removeAllOverlay);*/
+                })();
+
+
+
+
+                var label_1 = new BMap.Label(areasData[j].name, {position:point, offset : new BMap.Size(-20,-20)});  // 创建文本标注对象
+                var opts = {
+                    position : point,    // 指定文本标注所在的地理位置
+                    offset   : new BMap.Size(-28, 0)    //设置文本偏移量
+                }
+                var label_2 = new BMap.Label("车数:"+areasData[j].totalNumber, opts);  // 创建文本标注对象
+                // label_1.disableMassClear();//设置这个覆盖物禁止移除
+                map.addOverlay(label_1);
+                map.addOverlay(label_2);
+
+                label_1.setStyle({
+                    color : "#FFF",
+                    backgroundColor:'transparent',//文本背景色
+                    borderColor:'transparent',//文本框边框色
+                    fontSize : "12px",
+                    height : "16px",
+                    lineHeight : "20px",
+                    fontFamily:"微软雅黑"
+                });
+                label_2.setStyle({
+                    color : "#FFF",
+                    backgroundColor:'transparent',//文本背景色
+                    borderColor:'transparent',//文本框边框色
+                    fontSize : "13px",
+                    height : "20px",
+                    lineHeight : "20px",
+                    fontFamily:"微软雅黑"
+                });
+                var pointsBoundary = [];
+                for (var i = 0; i < areasData[j].polygon[0].length; i++) {
+                    var bd09Pooint = gcj02tobd09(areasData[j].polygon[0][i][0],areasData[j].polygon[0][i][1]);//高德转成百度地图经纬度
+                    pointsBoundary.push(new BMap.Point(bd09Pooint[0],bd09Pooint[1]));
+                }
+                var polygon = new BMap.Polygon(pointsBoundary,{strokeWeight: 2,fillColor:"", strokeColor: "#C0F",/* enableMassClear: false,*/strokeOpacity: 0.6});
+                map.addOverlay(polygon);
+
+                //因为经纬度小数点后个数的原因,无法进行判定.
+                /*var count = 0;
+                for (var i = 0; i < ofoData.length; i++) {//对在不规则多边形内的点进行判定统计
+                    var bd09Pooint = gcj02tobd09(ofoData[i].lng,areasData[j].lat);//高德转成百度地图经纬度
+                    //血的教训一定要是BMap.Point类型, 函数会检查(point instanceof BMap.Point)
+                    if(BMapLib.GeoUtils.isPointInPolygon(new BMap.Point(bd09Pooint[0],bd09Pooint[1]),polygon)){
+                        // console.log("在区域内");
+                        // count++;
+
+                    }/!*else
+                    {
+                        console.log("不在区域内");
+                    }*!/
+                }
+                console.log(count);*/
+                // polyLine.enableMassClear();
+            }
+        }
+	</script>
+</body>
+</html>

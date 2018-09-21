@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sstl.sharebike.mapper.BikeMapper" >
+    <resultMap id="BaseResultMap" type="com.sstl.sharebike.model.LngLatObject" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="lng" property="lng" jdbcType="DECIMAL" />
+        <result column="lat" property="lat" jdbcType="DECIMAL" />
+        <result column="bicycle_id" property="bicycle_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--   注意jdbcType必须大写
+        mybatis默认会把mapper.xml映射为dao（m;apper）的实现
+        -->
+    <select id="getLastPositionByCompanyIdAndTime"  resultMap="BaseResultMap"  >
+        SELECT
+	        longitude lng,
+	        latitude lat,
+	        bicycle_id
+        FROM
+	        (
+                SELECT *
+                FROM
+                    history_bike_status AS hbs
+                WHERE
+                    hbs.company_id = #{arg0} AND hbs.upload_time BETWEEN #{arg1}
+                    AND #{arg2}
+                ORDER BY hbs.upload_time DESC
+	        ) temp
+        GROUP BY bicycle_id
+    </select>
+    <!--String companyId, String searchBeginDate, String searchEndDate)-->
+
+    <select id="getAllPositionByCompanyIdAndTime"  resultMap="BaseResultMap"  >
+        SELECT
+        longitude lng,
+        latitude lat,
+        bicycle_id
+        FROM
+            history_bike_status AS hbs
+        WHERE
+            hbs.company_id = #{arg0}
+        AND hbs.upload_time BETWEEN #{arg1}
+        AND #{arg2}
+    </select>
+
+</mapper>

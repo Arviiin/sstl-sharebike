@@ -1,0 +1,153 @@
+//区行政边界
+function getDistrictBoundary(){
+    var bdary = new BMap.Boundary();
+    bdary.get("上海市浦东新区", function(rs){       //获取行政区域
+        //map.clearOverlays();        //清除地图覆盖物
+        var count = rs.boundaries.length; //行政区域的点有多少个
+        if (count === 0) {
+            alert('未能获取当前输入行政区域');
+            return ;
+        }
+//        	var pointArray = [];
+        for (var i = 0; i < count; i++) {
+            plyPuDong = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 3, strokeColor: "#ff0000", fillColor:""}); //建立多边形覆盖物
+            map.addOverlay(plyPuDong);  //添加覆盖物
+            plyPuDong.hide();
+//				pointArray = pointArray.concat(ply.getPath());
+        }
+        //map.setViewport(pointArray);    //调整视野
+//			var circle = new BMap.Circle(point,7000,{strokeColor:"gray",fillColor:"red", strokeWeight:10, strokeOpacity:0.5}); //创建圆
+//			var circle = new BMap.Circle(point,7000,styleOptions); //创建圆
+//			map.addOverlay(circle);            //增加圆    121.705162,31.065857
+    });
+}
+
+/*setTimeout(function(){
+		getDistrictBoundary();
+	}, 2000);*/
+/**
+ * WGS-84 地心坐标系，即GPS原始坐标体系。在中国，任何一个地图产品都不允许使用GPS坐标，据说是为了保密。GoogleEarth及GPS芯片使用
+ *
+ * 根据互联网地图服务规定，国内互联网地图必须使用国测局加密的gcj02坐标系，腾讯,高德和谷歌在中国的坐标都是这一坐标系，
+ * 可以互通，谷歌的地图数据就是高德提供的。百度在gcj02的基础上，又做了一次加密，坐标系跟高德、谷歌不同。
+ * 提供了百度坐标（BD09）、国测局坐标（火星坐标，GCJ02）、和WGS84坐标系之间的转换
+ *
+ * 另外百度地图也提供了转换方法,但是有个数限制,且速度没有本地快
+ * Convertor
+ *用于将其他坐标系的坐标转换为百度坐标。
+ */
+
+//定义一些常量
+var x_PI = 3.14159265358979324 * 3000.0 / 180.0;
+var PI = 3.1415926535897932384626;
+var a = 6378245.0;
+var ee = 0.00669342162296594323;
+
+/**
+ * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换
+ * 即 百度 转 谷歌、高德
+ * @param bd_lon
+ * @param bd_lat
+ * @returns {*[]}
+ */
+function bd09togcj02(bd_lon, bd_lat) {
+    var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+    var x = bd_lon - 0.0065;
+    var y = bd_lat - 0.006;
+    var z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);
+    var theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * x_pi);
+    var gg_lng = z * Math.cos(theta);
+    var gg_lat = z * Math.sin(theta);
+    return [gg_lng, gg_lat]
+}
+
+/**
+ * 火星坐标系 (GCJ-02) 与百度坐标系 (BD-09) 的转换
+ * 即谷歌、高德 转 百度
+ * @param lng
+ * @param lat
+ * @returns {*[]}
+ */
+function gcj02tobd09(lng, lat) {
+    var z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * x_PI);
+    var theta = Math.atan2(lat, lng) + 0.000003 * Math.cos(lng * x_PI);
+    var bd_lng = z * Math.cos(theta) + 0.0065;
+    var bd_lat = z * Math.sin(theta) + 0.006;
+    return [bd_lng, bd_lat]
+}
+
+/**
+ * WGS84转GCj02
+ * @param lng
+ * @param lat
+ * @returns {*[]}
+ */
+function wgs84togcj02(lng, lat) {
+    if (out_of_china(lng, lat)) {
+        return [lng, lat]
+    }
+    else {
+        var dlat = transformlat(lng - 105.0, lat - 35.0);
+        var dlng = transformlng(lng - 105.0, lat - 35.0);
+        var radlat = lat / 180.0 * PI;
+        var magic = Math.sin(radlat);
+        magic = 1 - ee * magic * magic;
+        var sqrtmagic = Math.sqrt(magic);
+        dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * PI);
+        dlng = (dlng * 180.0) / (a / sqrtmagic * Math.cos(radlat) * PI);
+        var mglat = lat + dlat;
+        var mglng = lng + dlng;
+        return [mglng, mglat]
+    }
+}
+
+/**
+ * GCJ02 转换为 WGS84
+ * @param lng
+ * @param lat
+ * @returns {*[]}
+ */
+function gcj02towgs84(lng, lat) {
+    if (out_of_china(lng, lat)) {
+        return [lng, lat]
+    }
+    else {
+        var dlat = transformlat(lng - 105.0, lat - 35.0);
+        var dlng = transformlng(lng - 105.0, lat - 35.0);
+        var radlat = lat / 180.0 * PI;
+        var magic = Math.sin(radlat);
+        magic = 1 - ee * magic * magic;
+        var sqrtmagic = Math.sqrt(magic);
+        dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * PI);
+        dlng = (dlng * 180.0) / (a / sqrtmagic * Math.cos(radlat) * PI);
+        mglat = lat + dlat;
+        mglng = lng + dlng;
+        return [lng * 2 - mglng, lat * 2 - mglat]
+    }
+}
+
+function transformlat(lng, lat) {
+    var ret = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + 0.1 * lng * lat + 0.2 * Math.sqrt(Math.abs(lng));
+    ret += (20.0 * Math.sin(6.0 * lng * PI) + 20.0 * Math.sin(2.0 * lng * PI)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(lat * PI) + 40.0 * Math.sin(lat / 3.0 * PI)) * 2.0 / 3.0;
+    ret += (160.0 * Math.sin(lat / 12.0 * PI) + 320 * Math.sin(lat * PI / 30.0)) * 2.0 / 3.0;
+    return ret
+}
+
+function transformlng(lng, lat) {
+    var ret = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + 0.1 * lng * lat + 0.1 * Math.sqrt(Math.abs(lng));
+    ret += (20.0 * Math.sin(6.0 * lng * PI) + 20.0 * Math.sin(2.0 * lng * PI)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(lng * PI) + 40.0 * Math.sin(lng / 3.0 * PI)) * 2.0 / 3.0;
+    ret += (150.0 * Math.sin(lng / 12.0 * PI) + 300.0 * Math.sin(lng / 30.0 * PI)) * 2.0 / 3.0;
+    return ret
+}
+
+/**
+ * 判断是否在国内，不在国内则不做偏移
+ * @param lng
+ * @param lat
+ * @returns {boolean}
+ */
+function out_of_china(lng, lat) {
+    return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false);
+}
