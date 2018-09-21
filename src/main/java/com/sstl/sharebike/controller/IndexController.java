@@ -55,7 +55,7 @@ public class IndexController {
 //        String lastPositionJsonDate = JsonUtils.objectToJson(lngLatObjects);
 //        System.out.println(lastPositionJsonDate);
 //        map.put("lastPositionJsonDate",lastPositionJsonDate);
-        return "DbSharebikeImplByPointSet";
+        return "DbSharebikeImplByPointSetCopy2";
     }
 
     @RequestMapping(value = "/getOfoLastPositionData", method = RequestMethod.GET)
